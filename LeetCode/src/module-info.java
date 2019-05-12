@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author Sinclair
+ *
+ */
+module leetCode {
+}
