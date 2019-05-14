@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * @author Sinclair
- *
- */
-module leetCode {
-}
