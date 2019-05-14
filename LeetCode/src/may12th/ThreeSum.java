@@ -1,4 +1,4 @@
-package May12th;
+package may12th;
 
 import java.util.ArrayList;
 import java.util.Collections;
