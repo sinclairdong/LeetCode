@@ -5,7 +5,7 @@ import java.util.Stack;
 public class ValidParentheses {
 
   public static void main(String[] args) {
-    System.out.println(new ValidParentheses().isValid("()[]{}"));
+    System.out.println(new ValidParentheses().isValid("(]"));
   }
 
   public boolean isValid(String s) {
@@ -16,14 +16,17 @@ public class ValidParentheses {
       if (isLeft(c)) {
         stack.push(c);
       } else {
+        if (stack.isEmpty()) {
+          return false;
+        }
         char last = stack.pop();
-        if (last - c > 5) {
+        if (Math.abs(last - c) > 5) {
           return false;
         }
       }
     }
 
-    return true;
+    return stack.isEmpty();
   }
 
   public boolean isLeft(char c) {
