@@ -24,14 +24,14 @@ public class GenerateParenthesis {
       result.add("");
       return result;
     }
-    for (int i = 1; i < n; i++) {
+    for (int i = 0; i < n; i++) {
       if (!h.containsKey(i)) {
         h.put(i, generateParenthesishelper(i, h));
       }
-      if (!h.containsKey(n - i)) {
-        h.put(n - i, generateParenthesishelper(n - i, h));
-      }
-      result.addAll(merge(h.get(i), h.get(n - 1)));
+    }
+
+    for (int i = 0; i < n; i++) {
+      result.addAll(merge(h.get(i), h.get(n - i - 1)));
     }
 
     return result;
