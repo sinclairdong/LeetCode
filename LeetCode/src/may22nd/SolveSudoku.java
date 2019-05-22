@@ -1,7 +1,8 @@
-package may21nd;
+package may22nd;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
 
 public class SolveSudoku {
   public static void main(String[] args) {
@@ -40,7 +41,10 @@ public class SolveSudoku {
 
 
 
-    // System.out.println(min.val + " " + min.i + " " + min.j + " " + space);
+
+
+
+    // System.out.println("# " + min.i + " " + min.j + " " + min.available + " " + space);
     // for (int i = 0; i < cells.length; i++) {
     // for (int j = 0; j < cells[0].length; j++) {
     // System.out.print(cells[i][j]);
@@ -48,6 +52,9 @@ public class SolveSudoku {
     // System.out.println("");
     // }
     // System.out.println("");
+
+
+
   }
 
   public void solveSudoku(char[][] board) {
@@ -85,68 +92,54 @@ public class SolveSudoku {
     // find the object with least option
     Cell min = findMin(cells);
 
-
-
-    System.out.println(
-        min.val + "     " + min.i + "     " + min.j + "     " + min.available + "    " + space);
-    for (int i = 0; i < cells.length; i++) {
-      for (int j = 0; j < cells[0].length; j++) {
-        if (i == min.i && j == min.j) {
-          System.out.print(cells[i][j]);
-        } else {
-          System.out.print(cells[i][j]);
-        }
-      }
-      System.out.println("");
-    }
-    System.out.println("");
-
-
-
-    List<Character> ava = new ArrayList<>();
+    Set<Character> ava = new HashSet<>();
     ava.addAll(min.available);
     for (char s : ava) {
       min.val = s;
-      updateRemove(cells, min);
+      Set<Cell> removed = updateRemove(cells, min);
       if (solveSudokuHelper(board, cells, space - 1)) {
         board[min.i][min.j] = min.val;
         return true;
       }
       // if doesn't work then reset and choose another
-      updateAdd(cells, min);
+      updateAdd(removed, min);
     }
 
     return false;
   }
 
-  public void updateRemove(Cell[][] cells, Cell cell) {
+  public Set<Cell> updateRemove(Cell[][] cells, Cell cell) {
+
+    Set<Cell> result = new HashSet<>();
     for (int i = 0; i < cells.length; i++) {
-      cells[i][cell.j].remove(cell.val);
-      cells[cell.i][i].remove(cell.val);
+      if (cells[i][cell.j].remove(cell.val)) {
+        result.add(cells[i][cell.j]);
+      }
+      if (cells[cell.i][i].remove(cell.val)) {
+        result.add(cells[cell.i][i]);
+      }
     }
     int i_c = cell.i / 3;
     int j_c = cell.j / 3;
     // remove the val for the thing
     for (int i = 0; i < 3; i++) {
+
       for (int j = 0; j < 3; j++) {
-        cells[i_c * 3 + i][j_c * 3 + j].remove(cell.val);
+
+        if (cells[i_c * 3 + i][j_c * 3 + j].remove(cell.val)) {
+          result.add(cells[i_c * 3 + i][j_c * 3 + j]);
+        }
       }
     }
+    return result;
+
   }
 
-  public void updateAdd(Cell[][] cells, Cell cell) {
-    for (int i = 0; i < cells.length; i++) {
-      cells[i][cell.j].add(cell.val);
-      cells[cell.i][i].add(cell.val);
+  public void updateAdd(Set<Cell> cells, Cell cell) {
+    for (Cell c : cells) {
+      c.add(cell.val);
     }
-    int i_c = cell.i / 3;
-    int j_c = cell.j / 3;
-    // remove the val for the thing
-    for (int i = 0; i < 3; i++) {
-      for (int j = 0; j < 3; j++) {
-        cells[i_c * 3 + i][j_c * 3 + j].add(cell.val);
-      }
-    }
+
     cell.val = '.';
   }
 
@@ -166,18 +159,16 @@ public class SolveSudoku {
 
   private class Cell {
     public Character val;
-    public List<Character> available;
+    public Set<Character> available;
     public int i;
     public int j;
 
     public Cell(int i, int j) {
       this.i = i;
       this.j = j;
-      this.available = new ArrayList<>();
+      this.available = new HashSet<>();
       for (char n = '1'; n <= '9'; n++) {
-
         available.add(n);
-
       }
     }
 
